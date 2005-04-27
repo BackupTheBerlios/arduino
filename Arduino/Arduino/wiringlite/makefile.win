@@ -1,0 +1,11 @@
+compile :
+	-rm tmp/*
+	cat include/wiringlite.inc > tmp/prog.c
+	cat ../build/*.c >> tmp/prog.c
+	cp include/* tmp/
+	cp ../../cyg*.dll tmp/
+	bin/gnumake -s -C tmp
+
+program :
+	cp ../../cyg*.dll .
+	../../tools/avr/bin/uisp -dprog=stk500 -dspeed=9600 -dserial=com1 -dpart=ATmega8 if=tmp/prog.hex --upload
