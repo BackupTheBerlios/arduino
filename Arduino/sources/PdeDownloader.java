@@ -81,7 +81,10 @@ public class PdeDownloader implements PdeMessageConsumer {
     Process process;
     int result = 0;
     try {
-      process = Runtime.getRuntime().exec(userdir + "lib/wiringlite/bin/gnumake -s -C " + userdir + "lib/wiringlite program");
+      serialPreferences();
+      String command = userdir + "lib/wiringlite/bin/gnumake SERIAL=" + serial_port + " -s -C " + userdir + "lib/wiringlite program";
+      System.out.println(command);
+      process = Runtime.getRuntime().exec(command);
       new PdeMessageSiphon(process.getInputStream(), this);
       new PdeMessageSiphon(process.getErrorStream(), this);
       boolean compiling = true;

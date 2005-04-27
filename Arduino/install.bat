@@ -8,7 +8,7 @@ IF %WIRINGDIR%=="" GOTO ERROR
 
 COPY wiringlite\makefile.win wiringlite\makefile
 COPY wiringlite\include\makefile.win wiringlite\include\makefile
-COPY wiringlite\bin\gnumake.win wiringlite\bin\gnumake
+COPY wiringlite\bin\gnumake.win wiringlite\bin\gnumake,exe
 COPY pde.jar %WIRINGDIR%\lib
 MKDIR %WIRINGDIR%\lib\wiringlite
 XCOPY /y /s wiringlite %WIRINGDIR%\lib\wiringlite

@@ -8,4 +8,4 @@ compile :
 
 program :
 	cp ../../cyg*.dll .
-	bin/uisp -dprog=stk500 -dspeed=9600 -dserial=com1 -dpart=ATmega8 if=tmp/prog.hex --upload
+	bin/uisp -dprog=stk500 -dspeed=9600 -dserial=${SERIAL} -dpart=ATmega8 if=tmp/prog.hex --upload

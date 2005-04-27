@@ -6,4 +6,4 @@ compile :
 	bin/gnumake -s -C tmp
 
 program :
-	../../tools/avr/bin/uisp -dprog=stk500 -dspeed=9600 -dserial=/dev/tty.usbserial0 -dpart=ATmega8 if=tmp/prog.hex --upload
+	../../tools/avr/bin/uisp -dprog=stk500 -dspeed=9600 -dserial=${SERIAL} -dpart=ATmega8 if=tmp/prog.hex --upload
