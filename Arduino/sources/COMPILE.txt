@@ -1,0 +1,11 @@
+Building the Wiring Lite version of pde.jar
+
+Extract Wiring-0003/Wiring.app/Contents/Resources/Java/pde.jar to ./pdeorig
+
+Issue The Following Commands:
+
+javac -classpath ./pdeorig PdeCompiler.java
+javac -classpath ./pdeorig PdeDownloader.java
+mv *.class pdeorig/
+cd pdeorig/
+jar cvf pde.jar *                                  
