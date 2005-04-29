@@ -1,9 +1,9 @@
-Wiring Lite/Arduino v0.3
+Wiring Lite/Arduino v0.3.4
 Massimo Banzi, David Cuartielles, David A. Mellis, Nick Zambetti
 For Wiring, by Hernando Barragan
 Based on Processing, by Ben Fry and Casey Reas
 Includes avrlib by Pascal Stang and some of unxutils
-21 April 2005
+29 April 2005
 
 Wiring Lite lets you use the Wiring IDE and (parts of) the API
 with the Arduino board (based on the Atmega8).  First, you need
@@ -14,6 +14,8 @@ Current commands include: digitalRead, digitalWrite,
 analogWrite (on digital pins 9 and 10 only), delay, millis,
 beginSerial, serialWrite, print.  Serial communication, however,
 seems to only work on the PC.
+
+WARNING: install Wiring Lite to a directory with no spaces in its name!
 
 BOOTLOADER INSTRUCTIONS
 1. Make sure that uisp (in <WIRING>/tools/avr/bin) is in your path.
@@ -40,4 +42,5 @@ UNINSTALLATION INSTRUCTIONS
 2. (Put it back to reinstall.)
 
 CHANGELOG
-v0.3.1 Split the wiringlite/include/makefile into mac and windows versions.
+v0.3.2 Split the wiringlite/include/makefile into mac and windows versions.
+v0.3.4 Now using the serial port specified by Wiring.  Minor bug fixes.
