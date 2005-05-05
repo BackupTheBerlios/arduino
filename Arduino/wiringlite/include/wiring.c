@@ -1,14 +1,9 @@
 /*
-
 wiring.c
 
-v0.1 by David A Mellis
-v0.2 addition by Massimo Banzi
-v0.3 Nick Zambetti: added cbi & sbi
-     DAM: ported delay, millis, analogWrite, and serial routines to avrlib
-
-Contains code by
-Peter Fleury.
+v 0.1 by David A Mellis
+v 0.2 addition by Massimo Banzi
+v 0.3 cbi & sbi by Nick Zambetti; 
 */
 
 #include <avr/io.h>
@@ -26,7 +21,10 @@ Peter Fleury.
 #endif
 
 // from Pascal's avrlib
+#include "global.h"
+#include "a2d.h"
 #include "timer.h"
+#include "uart.h"
 
 // timer.h #defines delay to be delay_us, we need to undefine
 // it so our delay can be in milliseconds.
@@ -34,7 +32,6 @@ Peter Fleury.
 
 #include "BConstants.h"
 #include "wiring.h"
-#include "uart.h"
 
 //int timer0 = 0;
 //unsigned long msCount = 0;
@@ -57,6 +54,11 @@ int analogOutPinToPort(int pin)
 int analogOutPinToBit(int pin)
 {
 	return analog_out_pin_to_port[pin].bit;
+}
+
+int analogInPinToBit(int pin)
+{
+	return analog_in_pin_to_port[pin].bit;
 }
 
 void pinMode(int pin, int mode)
@@ -87,19 +89,14 @@ int digitalRead(int pin)
 	return LOW;
 }
 
-int analogRead(int channel)
-{	   
-    // Select pin ADC0 using MUX
-    ADMUX = channel;
-    
-    //Start conversion
-    ADCSRA |= _BV(ADSC);
-    
-    // wait until converstion completed
-    while (ADCSRA & _BV(ADSC)) {}
-    
-    // get converted value
-    return ADCW;  
+int analogRead(int pin)
+{	
+	int ch = analogInPinToBit(pin);
+	a2dSetChannel(ch);
+	a2dStartConvert();
+	while (!a2dIsComplete());
+	return ADCW;
+	//return a2dConvert10bit(ch);
 }
 
 // Right now, PWM output only works on the pins with
@@ -122,12 +119,10 @@ void beginSerial(int baud)
 {
 	uartInit();
 	uartSetBaudRate(baud);
-    //uart_init(UART_BAUD_SELECT(baud, F_CPU));
 }
 
 void serialWrite(unsigned char c)
 {
-	//uart_putc(c);
 	uartSendByte(c);
 }
 
@@ -167,78 +162,8 @@ void delay(unsigned long ms)
 	timerPause(ms);
 }
 
-/*
-unsigned long millis()
-{
-	return msCount;
-}
-
-void delay(unsigned long ms)
-{
-    int x = ms / 16;
-	
-	
-	while ( x ) {
-	  x--;
-      _delay_loop_2(0);
-	}
-     
-	//delay_ms(ms);
-	
-	//unsigned long end = millis() + ms;
-	
-	//while (millis() != end) {}
-}
-
-void delay_ms(unsigned short ms)
-// delay for a minimum of <ms> 
-// with a 4Mhz crystal, the resolution is 1 ms 
-{
-	unsigned short outer1, outer2;
-     	outer1 = 5000; 
-
-    	while (outer1) {
-		outer2 = 5000;
-		while (outer2) {
-			while ( ms ) ms--;
-			outer2--;
-		}
-		outer1--;
-	}
-}
-
-void delay(unsigned long ms) {
-    unsigned long outer1, outer2;
-    outer1 = 400;
-    while (outer1) {
-        outer2 = 1000;
-        while (outer2) {
-            while ( ms ) ms--;
-            outer2--;
-        }
-        outer1--;
-    }
-}
-
-void timer0Init(void)
-{
-	TCCR0 = 0x03; // prescale of 64
-	TIMSK |= 0x01;
-}
-
-INTERRUPT(SIG_OVERFLOW0)
-{
-	++msCount;
-	TCNT0 = -(F_CPU / 64000UL);
-}
-*/
-
 int main(void)
 {
-	// Activate ADC with Prescaler 16 --> 1Mhz/16 = 62.5kHz
-	ADCSRA = _BV(ADEN) | _BV(ADPS2);
-	//ADCSRA = _BV(ADEN) | _BV(ADIE) | _BV(ADPS2) | _BV(ADPS1);
-	
 	sei();
 	
 	// timer 0 is used for millis() and delay()
@@ -250,6 +175,9 @@ int main(void)
 	timer1PWMInit(8);
 	timer1PWMAOn();
 	timer1PWMBOn();
+
+	a2dInit();
+	a2dSetPrescaler(ADC_PRESCALE_DIV128);
 	
 	setup();
 	
