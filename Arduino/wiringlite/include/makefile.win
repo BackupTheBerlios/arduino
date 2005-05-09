@@ -195,16 +195,16 @@ AVRDUDE_FLAGS += $(AVRDUDE_ERASE_COUNTER)
 # ---------------------------------------------------------------------------
 
 # Define directories, if needed.
-DIRAVR = ..\..\..\tools\avr
-DIRAVRBIN = $(DIRAVR)\bin
+DIRAVR = ../../../tools/avr
+DIRAVRBIN = $(DIRAVR)/bin
 
 # Define programs and commands.
 SHELL = sh
-CC = ${DIRAVRBIN}\avr-gcc
-OBJCOPY = ${DIRAVRBIN}\avr-objcopy
-OBJDUMP = ${DIRAVRBIN}\avr-objdump
-SIZE = ${DIRAVRBIN}\avr-size
-NM = ${DIRAVRBIN}\avr-nm
+CC = ${DIRAVRBIN}/avr-gcc
+OBJCOPY = ${DIRAVRBIN}/avr-objcopy
+OBJDUMP = ${DIRAVRBIN}/avr-objdump
+SIZE = ${DIRAVRBIN}/avr-size
+NM = ${DIRAVRBIN}/avr-nm
 AVRDUDE = avrdude
 REMOVE = rm -f
 COPY = cp

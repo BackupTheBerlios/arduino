@@ -1,7 +1,8 @@
 @echo off
 
 REM Change this next line to point to the directory
-REM that wiring 0003 is installed in.
+REM that wiring 0003 is installed in, without a trailing
+REM slash, e.g. "c:\wiring-0003"
 SET WIRINGDIR=""
 
 IF %WIRINGDIR%=="" GOTO ERROR
