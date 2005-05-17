@@ -1,9 +1,33 @@
 /*
-wiring.c
+  wiring.c - Wiring API Partial Implementation
+  Part of Arduino / Wiring Lite
 
-v 0.1 by David A Mellis
-v 0.2 addition by Massimo Banzi
-v 0.3 cbi & sbi by Nick Zambetti; 
+  Copyright (c) 2005 David A. Mellis
+
+  This library is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Lesser General Public
+  License as published by the Free Software Foundation; either
+  version 2.1 of the License, or (at your option) any later version.
+
+  This library is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  Lesser General Public License for more details.
+
+  You should have received a copy of the GNU Lesser General
+  Public License along with this library; if not, write to the
+  Free Software Foundation, Inc., 59 Temple Place, Suite 330,
+  Boston, MA  02111-1307  USA
+
+  $Id: wiring.c,v 1.3 2005/05/17 17:14:53 mellis Exp $
+*/
+
+/*
+  Revision History
+  v 0.1 by David A Mellis
+  v 0.2 addition by Massimo Banzi
+  v 0.3 cbi & sbi by Nick Zambetti
+  v 0.3.5 DAM fixed analogRead
 */
 
 #include <avr/io.h>
@@ -74,6 +98,12 @@ void pinMode(int pin, int mode)
 void digitalWrite(int pin, int val)
 {
 	if (digitalPinToPort(pin) != NOT_A_PIN) {
+		if (analogOutPinToBit(pin) == 1)
+			timer1PWMAOff();
+
+		if (analogOutPinToBit(pin) == 2)
+			timer1PWMBOff();
+
 		if (val == LOW)
 			cbi(_SFR_IO8(port_to_output[digitalPinToPort(pin)]), digitalPinToBit(pin));
 		else
@@ -91,10 +121,16 @@ int digitalRead(int pin)
 
 int analogRead(int pin)
 {	
+	int count = 0;
 	int ch = analogInPinToBit(pin);
 	a2dSetChannel(ch);
 	a2dStartConvert();
-	while (!a2dIsComplete());
+
+	// wait until the conversion is complete or we
+	// time out.  without the timeout, this sometimes
+	// becomes an infinite loop.
+	while (!a2dIsComplete() && count < 10000) count++;
+
 	return ADCW;
 	//return a2dConvert10bit(ch);
 }
@@ -105,11 +141,15 @@ int analogRead(int pin)
 // to digital output.
 void analogWrite(int pin, int val)
 {
-	if (analogOutPinToBit(pin) == 1)
+	if (analogOutPinToBit(pin) == 1) {
+		pinMode(pin, OUTPUT);
+		timer1PWMAOn();
 		timer1PWMASet(val);
-	else if (analogOutPinToBit(pin) == 2)
+	} else if (analogOutPinToBit(pin) == 2) {
+		pinMode(pin, OUTPUT);
+		timer1PWMBOn();
 		timer1PWMBSet(val);
-	else if (val < 128)
+	} else if (val < 128)
 		digitalWrite(pin, LOW);
 	else
 		digitalWrite(pin, HIGH);
@@ -173,8 +213,6 @@ int main(void)
 	timer1Init();
 	timer1SetPrescaler(TIMER_CLK_DIV1);
 	timer1PWMInit(8);
-	timer1PWMAOn();
-	timer1PWMBOn();
 
 	a2dInit();
 	a2dSetPrescaler(ADC_PRESCALE_DIV128);

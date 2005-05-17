@@ -11,4 +11,4 @@ cp wiringlite/include/makefile.osx wiringlite/include/makefile
 cp wiringlite/bin/gnumake.osx wiringlite/bin/gnumake
 cp -R wiringlite ${wiringdir}/lib
 rm ${wiringdir}/lib/wiringlite/tmp/dep/README.txt
-cp pde.jar ${wiringdir}/Wiring.app/Contents/Resources/Java
+cp pde.jar ${wiringdir}/Wiring*.app/Contents/Resources/Java
