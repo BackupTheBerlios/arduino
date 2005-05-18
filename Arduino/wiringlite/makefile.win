@@ -1,6 +1,6 @@
 # Arduino Makefile
 # Nick Zambetti and David A. Mellis
-# $Id: makefile.win,v 1.4 2005/05/09 22:51:51 mellis Exp $
+# $Id: makefile.win,v 1.5 2005/05/18 23:58:14 mellis Exp $
 
 # By default, this makefile uses the serial device specified by
 # Wiring (either in the Tools | Serial Port menu or the Wiring
@@ -10,18 +10,18 @@
 # SERIAL=com1
 
 # The Wiring Lite IDE runs the "compile" rule when you click the play button.
-compile:
-	-rm tmp/*
-	cat include/wiringlite.inc > tmp/prog.c
-	cat ../build/*.c >> tmp/prog.c
-	cp include/* tmp/
-	cp ../../cyg*.dll tmp/
-	bin/gnumake -s -C tmp
+compile :
+    -rm tmp/*
+    bin\cat include/wiringlite.inc > tmp/prog.c
+    bin\cat ../build/*.c >> tmp/prog.c
+    cp include/* tmp
+    cp ../../cyg*.dll tmp
+    bin/gnumake -s -C tmp
 
 # The IDE runs the "program" rule when you hit the export button.
 # The string after the colon determines the method used to 
-# program the microcontroller: program-using-bootloader or
-# program-with-isp.
+# program the microcontroller: program-using-bootloader,
+# program-with-isp, or program-over-parallel-port.
 program: program-using-bootloader
 
 # This rule is for uploading code using a bootloader already on
@@ -40,3 +40,8 @@ program-with-isp:
 	bin/uisp -dprog=stk500 -dspeed=115200 -dserial=${SERIAL} -dpart=ATmega8 if=tmp/prog.hex --erase
 	bin/uisp -dprog=stk500 -dspeed=115200 -dserial=${SERIAL} -dpart=ATmega8 if=tmp/prog.hex --upload
 	bin/uisp -dprog=stk500 -dspeed=115200 -dserial=${SERIAL} -dpart=ATmega8 if=tmp/prog.hex --verify
+
+# This rule is for uploading code using a parallel port programmer.
+program-over-parallel-port:
+    cp ../../cyg*.dll .
+    bin/uisp -dprog=dapa -dpart=ATmega8 if=tmp/prog.hex -dlpt=0x378 --erase --upload
