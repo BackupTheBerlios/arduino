@@ -1,6 +1,6 @@
 # Arduino Makefile
 # Nick Zambetti and David A. Mellis
-# $Id: makefile.osx,v 1.4 2005/05/17 17:14:53 mellis Exp $
+# $Id: makefile.osx,v 1.5 2005/05/20 15:41:03 mellis Exp $
 
 # By default, this makefile uses the serial device specified by
 # Wiring (either in the Tools | Serial Port menu or the Wiring
@@ -35,6 +35,4 @@ program-using-bootloader:
 # microcontroller, upload the code, and then verify it.
 # Atmel's isp follows the stk500 protocol and works at 115200 baud.
 program-with-isp:
-	../../tools/avr/bin/uisp -dprog=stk500 -dspeed=115200 -dserial=${SERIAL} -dpart=ATmega8 if=tmp/prog.hex --erase
-	../../tools/avr/bin/uisp -dprog=stk500 -dspeed=115200 -dserial=${SERIAL} -dpart=ATmega8 if=tmp/prog.hex --upload
-	../../tools/avr/bin/uisp -dprog=stk500 -dspeed=115200 -dserial=${SERIAL} -dpart=ATmega8 if=tmp/prog.hex --verify
+	../../tools/avr/bin/uisp -dprog=stk500 -dspeed=115200 -dserial=${SERIAL} -dpart=ATmega8 if=tmp/prog.hex --erase --upload --verify
