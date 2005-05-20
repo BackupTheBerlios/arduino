@@ -1,4 +1,1 @@
-#/Applications/Wiring\ 01/tools/avr/bin/uisp -dpart=ATmega8 -dprog=avrisp -dserial=/dev/tty.usbserial0 -dspeed=115200 --erase --upload if=ATMegaBOOT.hex -v
-/Applications/Wiring\ 01/tools/avr/bin/uisp -dpart=ATmega8 -dprog=avrisp -dserial=/dev/tty.USA19QW1b1P1.1 -dspeed=115200 --erase --upload if=ATMegaBOOT.hex -v
-
-
+uisp -dpart=ATmega8 -dprog=avrisp -dserial=/dev/tty.usbserial0 -dspeed=115200 if=ATMegaBOOT.hex --erase --upload --verify

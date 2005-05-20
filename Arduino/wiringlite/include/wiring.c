@@ -19,15 +19,7 @@
   Free Software Foundation, Inc., 59 Temple Place, Suite 330,
   Boston, MA  02111-1307  USA
 
-  $Id: wiring.c,v 1.3 2005/05/17 17:14:53 mellis Exp $
-*/
-
-/*
-  Revision History
-  v 0.1 by David A Mellis
-  v 0.2 addition by Massimo Banzi
-  v 0.3 cbi & sbi by Nick Zambetti
-  v 0.3.5 DAM fixed analogRead
+  $Id: wiring.c,v 1.4 2005/05/20 16:12:16 mellis Exp $
 */
 
 #include <avr/io.h>
@@ -57,14 +49,15 @@
 #include "BConstants.h"
 #include "wiring.h"
 
-//int timer0 = 0;
-//unsigned long msCount = 0;
-
+// Get the hardware port of the given virtual pin number.  This comes from
+// the pins_*.c file for the active board configuration.
 int digitalPinToPort(int pin)
 {
 	return digital_pin_to_port[pin].port;
 }
 
+// Get the bit location within the hardware port of the given virtual pin.
+// This comes from the pins_*.c file for the active board configuration.
 int digitalPinToBit(int pin)
 {
 	return digital_pin_to_port[pin].bit;
@@ -98,6 +91,9 @@ void pinMode(int pin, int mode)
 void digitalWrite(int pin, int val)
 {
 	if (digitalPinToPort(pin) != NOT_A_PIN) {
+		// If the pin that support PWM output, we need to turn it off
+		// before doing a digital write.
+
 		if (analogOutPinToBit(pin) == 1)
 			timer1PWMAOff();
 
@@ -113,34 +109,55 @@ void digitalWrite(int pin, int val)
 
 int digitalRead(int pin)
 {
-	if (digitalPinToPort(pin) != NOT_A_PIN)
+	if (digitalPinToPort(pin) != NOT_A_PIN) {
+		// If the pin that support PWM output, we need to turn it off
+		// before getting a digital reading.
+
+		if (analogOutPinToBit(pin) == 1)
+			timer1PWMAOff();
+
+		if (analogOutPinToBit(pin) == 2)
+			timer1PWMBOff();
+
 		return (_SFR_IO8(port_to_input[digitalPinToPort(pin)]) >> digitalPinToBit(pin)) & 0x01;
+	}
 	
 	return LOW;
 }
 
 int analogRead(int pin)
 {	
-	int count = 0;
+	int start_time = millis();
 	int ch = analogInPinToBit(pin);
 	a2dSetChannel(ch);
 	a2dStartConvert();
 
 	// wait until the conversion is complete or we
 	// time out.  without the timeout, this sometimes
-	// becomes an infinite loop.
-	while (!a2dIsComplete() && count < 10000) count++;
+	// becomes an infinite loop.  page 245 of the atmega8
+	// datasheet says the conversion should take at most
+	// 260 microseconds, so if two milliseconds have ticked
+	// by, something's wrong.
+	while (!a2dIsComplete() && millis() - start_time < 2);
 
-	return ADCW;
+	// a2Convert10bit sometimes read ADCL and ADCH in the
+	// wrong order (?) causing it to sometimes miss reading,
+	// especially if called multiple times in rapid succession.
 	//return a2dConvert10bit(ch);
+	return ADCW;
 }
 
 // Right now, PWM output only works on the pins with
 // hardware support.  These are defined in the appropriate
-// pins_... file.  For the rest of the pins, we default
+// pins_*.c file.  For the rest of the pins, we default
 // to digital output.
 void analogWrite(int pin, int val)
 {
+	// We need to make sure the PWM output is enabled for those pins
+	// that support it, as we turn it off when digitally reading or
+	// writing with them.  Also, make sure the pin is in output mode
+	// for consistenty with Wiring, which doesn't require a pinMode
+	// call for the analog output pins.
 	if (analogOutPinToBit(pin) == 1) {
 		pinMode(pin, OUTPUT);
 		timer1PWMAOn();
@@ -168,7 +185,7 @@ void serialWrite(unsigned char c)
 
 void printMode(int mode)
 {
-	// do nothing
+	// do nothing, we only support serial printing, not lcd.
 }
 
 void uartSendString(unsigned char *str)
@@ -191,9 +208,10 @@ void print(const char *format, ...)
 
 unsigned long millis()
 {
-	// timer 0 increments every timer0GetPrescaler() cycles, and overflows when it
-	// reaches 256.  we calculate the total number of clock cycles, then divide
-	// by the number of clock cycles per millisecond.
+	// timer 0 increments every timer0GetPrescaler() cycles, and
+	// overflows when it reaches 256.  we calculate the total
+	// number of clock cycles, then divide by the number of clock
+	// cycles per millisecond.
 	return timer0GetOverflowCount() * timer0GetPrescaler() * 256L / F_CPU * 1000L;
 }
 
