@@ -1,6 +1,6 @@
 # Arduino Makefile
 # Nick Zambetti and David A. Mellis
-# $Id: makefile.win,v 1.6 2005/05/20 15:41:03 mellis Exp $
+# $Id: makefile.win,v 1.7 2005/05/20 18:23:54 mellis Exp $
 
 # By default, this makefile uses the serial device specified by
 # Wiring (either in the Tools | Serial Port menu or the Wiring
@@ -11,12 +11,12 @@
 
 # The Wiring Lite IDE runs the "compile" rule when you click the play button.
 compile :
-    -bin\rm tmp/*
-    bin\cat include/wiringlite.inc > tmp/prog.c
-    bin\cat ../build/*.c >> tmp/prog.c
-    bin\cp include/* tmp
-    bin\cp ../../cyg*.dll tmp
-    bin\gnumake -s -C tmp
+	-bin\rm tmp/*
+	bin\cat include/wiringlite.inc > tmp/prog.c
+	bin\cat ../build/*.c >> tmp/prog.c
+	bin\cp include/* tmp
+	bin\cp ../../cyg*.dll tmp
+	bin\gnumake -s -C tmp
 
 # The IDE runs the "program" rule when you hit the export button.
 # The string after the colon determines the method used to 
@@ -41,5 +41,5 @@ program-with-isp:
 
 # This rule is for uploading code using a parallel port programmer.
 program-over-parallel-port:
-    cp ../../cyg*.dll .
-    bin/uisp -dprog=dapa -dpart=ATmega8 if=tmp/prog.hex -dlpt=0x378 --erase --upload
+	cp ../../cyg*.dll .
+	bin/uisp -dprog=dapa -dpart=ATmega8 if=tmp/prog.hex -dlpt=0x378 --erase --upload
