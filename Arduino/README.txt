@@ -1,5 +1,5 @@
 Wiring Lite/Arduino
-v0.3.6 - 20 May 2005
+v0.3.6 - 23 May 2005
 http://ardiuno.berlios.de/
 Massimo Banzi, David Cuartielles, David A. Mellis, Nick Zambetti
 
@@ -35,8 +35,12 @@ INSTALLATION INSTRUCTIONS
 1. Install Wiring 0003.
 2. Mac: double-click install.command, enter the path to Wiring
    when prompted (make sure it has no spaces in it).
-   Windows: edit install.bat to specify the directory to Wiring
+   Windows XP: edit install.bat to specify the directory to Wiring
    (make sure it has no spaces in it).  Then double-click install.bat.
+   Windows 2000: edit install-w2k.bat to specify the directory to Wiring
+   (make sure it has no spaces in it).  Then double-click install-w2k.bat.
+3. Windows: If you're using a parallel port programmer, you need to
+   install giveio: unzip giveio.zip and run ginstall.bat.
 
 USAGE INSTRUCTIONS
 1. Run Wiring 0003.
@@ -54,6 +58,11 @@ Added a timeout to analogRead, as it was sometimes going into an infinite loop.
 Added alternative upload options to the makefile (for an ISP or parallel programmer).
 Fixed Windows path problems which required having rm, cp, etc. in path (e.g. having WinAVR)
 Fixed digitalWrite and digitalRead on pins 9 and 10.
+Added Windows 2000 specific makefiles and installer to fix problem with forward slashes.
+Made Mac OS X installer flexible enough to handle names for Wiring.app.
+Switched the default Windows uploader to avrdude (with a slightly modified .conf file)
+Added avrdude to the distribution.
+Added giveio.zip to the distribution (for use with parallel port programmers).
 
 v0.3.5 Fixed analogRead (using avrlib's a2d)
 v0.3.4 Now using the serial port specified by Wiring.  Minor bug fixes.
