@@ -21,7 +21,7 @@ GOTO END
 
 :ERROR
 
-ECHO You need to specify your wiring directory in install.bat.
+ECHO You need to specify your wiring directory in install-w2k.bat.
 PAUSE
 
 :END

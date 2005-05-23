@@ -1,6 +1,6 @@
 # Arduino Makefile (for Windows XP)
 # Nick Zambetti and David A. Mellis
-# $Id: makefile.win,v 1.8 2005/05/23 17:19:56 mellis Exp $
+# $Id: makefile.win,v 1.9 2005/05/23 18:21:46 mellis Exp $
 
 # By default, this makefile uses the serial device specified by
 # Wiring (either in the Tools | Serial Port menu or the Wiring
@@ -22,7 +22,7 @@ compile:
 # The string after the colon determines the method used to 
 # program the microcontroller: program-using-bootloader,
 # program-with-isp, or program-over-parallel-port.
-program: program-with-avrdude
+program: program-using-bootloader-avrdude
 
 # This rule is for uploading code using a bootloader already on
 # the microcontroller.  It should run at the baud rate specified
