@@ -53,7 +53,7 @@ v0.3.6
 Added a timeout to analogRead, as it was sometimes going into an infinite loop.
 Added alternative upload options to the makefile (for an ISP or parallel programmer).
 Fixed Windows path problems which required having rm, cp, etc. in path (e.g. having WinAVR)
-digitalWrite and digitalRead should now work on pins 9 and 10.
+Fixed digitalWrite and digitalRead on pins 9 and 10.
 
 v0.3.5 Fixed analogRead (using avrlib's a2d)
 v0.3.4 Now using the serial port specified by Wiring.  Minor bug fixes.

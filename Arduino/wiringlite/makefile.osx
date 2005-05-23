@@ -1,6 +1,6 @@
-# Arduino Makefile
+# Arduino Makefile (for Mac OS X)
 # Nick Zambetti and David A. Mellis
-# $Id: makefile.osx,v 1.5 2005/05/20 15:41:03 mellis Exp $
+# $Id: makefile.osx,v 1.6 2005/05/23 17:19:56 mellis Exp $
 
 # By default, this makefile uses the serial device specified by
 # Wiring (either in the Tools | Serial Port menu or the Wiring
