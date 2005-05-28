@@ -43,8 +43,8 @@ TARGET = prog
 
 
 # List C source files here. (C dependencies are automatically generated.)
-SRC = pins_arduino.c wiring.c ../avrlib/uart.c ../avrlib/buffer.c ../avrlib/timer.c ../avrlib/a2d.c $(TARGET).c 
-
+#SRC = pins_arduino.c wiring.c ../avrlib/uart.c ../avrlib/buffer.c ../avrlib/timer.c ../avrlib/a2d.c $(TARGET).c 
+SRC = pins_arduino.c wiring.c ../avrlib/uart.c ../avrlib/buffer.c ../avrlib/timer.c $(TARGET).c 
 
 # List Assembler source files here.
 # Make them always end in a capital .S.  Files ending in a lowercase .s

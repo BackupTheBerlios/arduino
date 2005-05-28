@@ -1,5 +1,5 @@
 Wiring Lite/Arduino
-v0.3.6 - 23 May 2005
+v0.3.7 - 23 May 2005
 http://ardiuno.berlios.de/
 Massimo Banzi, David Cuartielles, David A. Mellis, Nick Zambetti
 
@@ -21,6 +21,11 @@ For a list of current bugs, see the online database at:
 https://developer.berlios.de/bugs/?group_id=3590
 
 WARNING: install Wiring Lite to a directory with no spaces in its name!
+
+NOTE: on Windows, if you get an error of that sounds something like
+"'bin': no such command, or executable found" or "'..': no such command
+or executable found", try running the install-w2k.bat instead of the
+install.bat.  Caused by funkiness with forward and backward slashes.
 
 BOOTLOADER INSTRUCTIONS
 1. Make sure that uisp (in <WIRING>/tools/avr/bin) is in your path.

@@ -19,7 +19,7 @@
   Free Software Foundation, Inc., 59 Temple Place, Suite 330,
   Boston, MA  02111-1307  USA
 
-  $Id: wiring.c,v 1.6 2005/05/24 17:47:41 mellis Exp $
+  $Id: wiring.c,v 1.7 2005/05/28 21:04:15 mellis Exp $
 */
 
 #include <avr/io.h>
@@ -38,7 +38,7 @@
 
 // from Pascal's avrlib
 #include "global.h"
-#include "a2d.h"
+//#include "a2d.h"
 #include "timer.h"
 #include "uart.h"
 
@@ -125,10 +125,15 @@ int digitalRead(int pin)
 	return LOW;
 }
 
+/*
 int analogRead(int pin)
-{	
-	int start_time = millis();
+{
+	unsigned long start_time = millis();
 	int ch = analogInPinToBit(pin);
+	volatile unsigned int low, high;
+
+	//return a2dConvert10bit(ch);
+
 	a2dSetChannel(ch);
 	a2dStartConvert();
 
@@ -138,13 +143,46 @@ int analogRead(int pin)
 	// datasheet says the conversion should take at most
 	// 260 microseconds, so if two milliseconds have ticked
 	// by, something's wrong.
-	while (!a2dIsComplete() && millis() - start_time < 2);
+	//while (!a2dIsComplete() && millis() - start_time < 50);
+	while (!a2dIsComplete());
 
 	// a2Convert10bit sometimes read ADCL and ADCH in the
 	// wrong order (?) causing it to sometimes miss reading,
 	// especially if called multiple times in rapid succession.
 	//return a2dConvert10bit(ch);
-	return ADCW;
+	//return ADCW;
+	low = ADCL;
+	high = ADCH;
+
+	return (high << 8) | low;
+}
+*/
+
+int analogRead(int pin)
+{
+	unsigned int low, high, ch = analogInPinToBit(pin);
+
+	// the low 4 bits of ADMUX select the ADC channel
+	ADMUX = (ADMUX & (unsigned int) 0xf0) | (ch & (unsigned int) 0x0f);
+
+	// without a delay, we seem to read from the wrong channel
+	delay(1);
+
+	// start the conversion
+	sbi(ADCSRA, ADSC);
+
+	// ADSC is cleared when the conversion finishes
+	while (bit_is_set(ADCSRA, ADSC));
+
+	// we have to read ADCL first; doing so locks both ADCL
+	// and ADCH until ADCH is read.  reading ADCL second would
+	// cause the results of each conversion to be discarded,
+	// as ADCL and ADCH would be locked when it completed.
+	low = ADCL;
+	high = ADCH;
+
+	// combine the two bytes
+	return (high << 8) | low;
 }
 
 // Right now, PWM output only works on the pins with
@@ -232,8 +270,23 @@ int main(void)
 	timer1SetPrescaler(TIMER_CLK_DIV1);
 	timer1PWMInit(8);
 
-	a2dInit();
-	a2dSetPrescaler(ADC_PRESCALE_DIV128);
+	//a2dInit();
+	//a2dSetPrescaler(ADC_PRESCALE_DIV128);
+
+	// set a2d reference to AVCC (5 volts)
+	cbi(ADMUX, REFS1);
+	sbi(ADMUX, REFS0);
+
+	// set a2d prescale factor to 128
+	// 16 MHz / 128 = 125 KHz, inside the desired 50-200 KHz range.
+	// XXX: this will not work properly for other clock speeds, and
+	// this code should use F_CPU to determine the prescale factor.
+	sbi(ADCSRA, ADPS2);
+	sbi(ADCSRA, ADPS1);
+	sbi(ADCSRA, ADPS0);
+
+	// enable a2d conversions
+	sbi(ADCSRA, ADEN);
 	
 	setup();
 	
