@@ -1,0 +1,9 @@
+Mac OS X serproxy installation instructions
+-------------------------------------------
+
+1. Follow the UNIX installation instructions in INSTALL-unix
+2. Determine the serial device used by your adapter.
+   Connect your device, then, from the Terminal, type: ls /dev/tty.*
+   and look for something besides /dev/tty.modem
+3. Assign this device to one of the serial_device's in serproxy.cfg
+4. Connect to the net_port associated with the serial_device

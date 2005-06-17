@@ -1,0 +1,16 @@
+v0.1.3 - 04/06/2005 - DAM
+
+- Can now specify config file location on command line.
+- Added config file parameter for converting incoming
+  newlines to nils (e.g. for Flash)
+
+v0.1.2 - 22/12/1999
+
+- Fixed a string allocation bug in the config file parser.
+- Serproxy now displays which ports sockets are bound to
+  when it's compiled with debugging enabled.
+
+V0.1.1 - 14/12/1999
+
+- Cleaned up source code a little.
+
