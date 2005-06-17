@@ -19,8 +19,8 @@ that connection to a serial port.
 Installation
 ------------
 
-See the files INSTALL-unix and INSTALL-win32.txt for windows/unix
-installation instructions.
+See the files INSTALL-unix, INSTALL-macosx.txt, and INSTALL-win32.txt for
+windows/mac/unix installation instructions.
 
 I have only tested the unix version under RedHat Linux 6.0, 
 compiling under other unices will probably involve delving into
